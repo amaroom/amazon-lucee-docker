@@ -22,15 +22,6 @@ COPY catalina.properties server.xml web.xml tomcat8.conf /usr/share/tomcat8/conf
 COPY lucee-server.xml /opt/lucee/server/lucee-server/context/lucee-server.xml
 COPY lucee-web.xml.cfm /opt/lucee/web/lucee-web.xml.cfm
 
-# supervisord only plays well with python2.6
-COPY supervisord /usr/bin/
-COPY supervisord.conf /etc/
-RUN chmod a+x /usr/bin/supervisord
-
-# tomcat8 startup wrapper for supervisord
-COPY supervisor-tomcat-wrapper.sh /usr/sbin/
-RUN chmod a+x /usr/sbin/supervisor-tomcat-wrapper.sh
-
 # Provide test page
 RUN mkdir -p /var/www
 COPY index.cfm /var/www/
@@ -48,6 +39,15 @@ RUN cp -f /etc/pki/ca-trust/extracted/java/cacerts /opt/lucee/server/lucee-serve
 # Copy default nginx config files
 COPY nginx.conf /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/
+
+# supervisord only plays well with python2.6
+COPY supervisord /usr/bin/
+COPY supervisord.conf /etc/
+RUN chmod a+x /usr/bin/supervisord
+
+# tomcat8 startup wrapper for supervisord
+COPY supervisor-tomcat-wrapper.sh /usr/sbin/
+RUN chmod a+x /usr/sbin/supervisor-tomcat-wrapper.sh
 
 # Expose HTTP and HTTPS ports
 EXPOSE 80 443
